@@ -1,0 +1,20 @@
+1)Créer un venv local
+python -m venv .
+
+2)Activer le venv
+source Scripts/activate
+
+2.5) Ouvrir pycharm et selectionner le répertoir créer. 
+
+3)(optionnel) Installer les dépendances
+pip -r requierements.txt
+
+J'installe mes librairies je code etc.
+4) Envoyer toutes les librairies installées dans le venv vers requirements avant de push.
+pip freeze > requierement.txt 
+
+5)
+push sur github requierements.txt
+
+Sur pycharm : utiliser gitbash dans le terminal
+quand je pip verifier bien que ça se fasse dans le local venv et pas dans le basic interpretor (qui sert de base à la création de venv -> probleme avec terminal powershell)
