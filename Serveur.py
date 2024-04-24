@@ -3,6 +3,7 @@ from utils import receive_data, send_data
 import pickle
 import sys
 import time
+from Huffman import HuffmanNode
 
 HOST = "localhost"
 HEADER_LENGTH = 10
@@ -11,6 +12,7 @@ PORT = 15555
 BUFFER_SIZE = 1024
 FILES_DIRECTORY = './fichiers/'
 fichiers = os.listdir(FILES_DIRECTORY)
+
 
 
 def handle_client(client_socket):
@@ -35,15 +37,21 @@ def handle_client(client_socket):
                 num_file = receive_data(client_socket)
                 print(f"vous avez selectionné le fichier numéro : {num_file}")
                 num_file = int(num_file)
-                send_data(client_socket, fichiers[num_file])
+                file_name = fichiers[num_file]
+                send_data(client_socket, file_name )
                 # Open the file to be sent
-                with open(FILES_DIRECTORY+fichiers[num_file], 'rb') as file:
+                with open(FILES_DIRECTORY+file_name, 'rb') as file:
                     file_data = file.read()
                 # Serialize the file data using Pickle
-                serialized_data = pickle.dumps(file_data)
-
+                huffman = HuffmanNode()
+                compressedData = huffman.compress(file_data.decode(FORMAT))
+                reverse_codes = huffman.reverse_codes
+                reverse_codes_serialized = pickle.dumps(reverse_codes)
+                send_data(client_socket, reverse_codes_serialized)
                 # Send the serialized data
-                send_data(client_socket, serialized_data)
+                send_data(client_socket, compressedData)
+
+
 
 
     client_socket.close()

@@ -1,6 +1,7 @@
 import pickle
 import socket, threading, sys
 from utils import receive_data, send_data
+from Huffman import HuffmanNode
 
 HOST = "localhost"
 FORMAT = "utf-8"
@@ -43,12 +44,19 @@ def main():
                 file_name = receive_data(client_socket)
                 if file_name is False:
                     continue
-                serialized_file = receive_data(client_socket, is_file=True)
-                if serialized_file is False:
+
+                reverse_codes_serialized = receive_data(client_socket,is_file=True)
+                if reverse_codes_serialized is False:
                     continue
-                file_received = pickle.loads(serialized_file)
+                reverse_codes = pickle.loads(reverse_codes_serialized)
+                compressed_file = receive_data(client_socket, is_file=True)
+                if compressed_file is False:
+                    continue
+                huffman = HuffmanNode()
+                huffman.set_reverse_codes(reverse_codes)
+                decompressedFile = huffman.decompress(compressed_file)
                 with open(OUTPUT_FILES_DIRECTORY+file_name, 'wb') as file:
-                    file.write(file_received)
+                    file.write(decompressedFile.encode(FORMAT))
 
 
 
